@@ -1,3 +1,3 @@
-# Data-structures
+# CODE BOOK
 
-Implementations of some commonly used data structures in competitive programming.
+Implementations of some commonly used data structures and algorithms in competitive programming.
