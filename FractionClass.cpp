@@ -1,62 +1,60 @@
-// Declaration : frac f(4, 5) , equivalent to 4/5
 
+template<typename T>
 struct frac{
-	int num , den ;
+    T num ,den ;
 
-	frac f(int x,int y) {
-		int g = __gcd(x,y) ;
-		x/=g , y/=g ;
+    frac(T x,T y) {
+        num = x, den = y ; 
+        T g = __gcd(x,y) ;
+        num /= g , den /= g ;
+    }
 
-		frac f1 = {x,y};
-		return f1; 
-	}
+    bool operator > (const frac &b) {
+        return num * b.den > b.num * den ;
+    }
 
-	bool operator > (const frac &b) {
-		return num * b.den > b.num * den ;
-	}
+    bool operator < (const frac &b) {
+        return num * b.den < b.num * den ;
+    }
 
-	bool operator < (const frac &b) {
-		return num * b.den < b.num * den ;
-	}
+    bool operator <= (const frac &b) {
+        return num * b.den <= b.num * den ;
+    }
 
-	bool operator <= (const frac &b) {
-		return num * b.den <= b.num * den ;
-	}
+    bool operator >= (const frac &b) {
+        return num * b.den >= b.num * den ;
+    }
 
-	bool operator >= (const frac &b) {
-		return num * b.den >= b.num * den ;
-	}
+    bool operator == (const frac &b) {
+        return num * b.den == b.num * den ;
+    }
 
-	bool operator == (const frac &b) {
-		return num * b.den == b.num * den ;
-	}
+    frac operator - (const frac &b) {
+        frac f((num * b.den - b.num * den) , den * b.den); 
+        T g = __gcd(f.num, f.den) ; 
+        f.num /= g; f.num /= g ;
+        return f ;
+    }
 
-	frac operator - (const frac &b) {
-		frac f1 = { (num * b.den - b.num * den) , den * b.den } ;
-		int g = __gcd(f1.num, f1.den) ; 
-		f1.num /= g; f1.num /= g ;
-		return f1 ;
-	}
+    frac operator + (const frac &b) {
+        frac f((num * b.den + b.num * den) , den * b.den) ;
+        T g = __gcd(f.num, f.den) ; 
+        f.num /= g; f.num /= g ;
+        return f ;
+    }
 
-	frac operator + (const frac &b) {
-		frac f1 = { (num * b.den + b.num * den) , den * b.den } ;
-		int g = __gcd(f1.num, f1.den) ; 
-		f1.num /= g; f1.num /= g ;
-		return f1 ;
-	}
+    frac operator * (const frac &b) {
+        frac f(num * b.num , den * b.den ) ;
+        T g = __gcd(f.num, f.den) ; 
+        f.num /= g; f.num /= g ;
+        return f ;
+    }
 
-	frac operator * (const frac &b) {
-		frac f1 = { num * b.num , den * b.den } ;
-		int g = __gcd(f1.num, f1.den) ; 
-		f1.num /= g; f1.num /= g ;
-		return f1 ;
-	}
-
-	frac operator / (const frac &b) {
-		frac f1 = { num * b.den , den * b.num } ;
-		int g = __gcd(f1.num, f1.den) ; 
-		f1.num /= g; f1.num /= g ;
-		return f1 ;
-	}
+    frac operator / (const frac &b) {
+        frac f(num * b.den , den * b.num) ;
+        T g = __gcd(f.num, f.den) ; 
+        f.num /= g; f.num /= g ;
+        return f ;
+    }
 
 };
