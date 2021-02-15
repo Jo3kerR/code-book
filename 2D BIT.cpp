@@ -1,27 +1,30 @@
-// update(x, y, val) : adds val to (x, y) 
-// to query on the rectangle (x1,y1) (x1, y2) (x2, y1) (x2, y2) 
-// x1 <= x2, y1 <= y2 
-// query(x2, y2) - query(x1, y2) - query(x2, y1) + query(x1, y1)
 
-const int N = 1e3 + 5;
-int n, BIT[N][N];
+template<typename T>
+struct BIT_2D {
 
-void update(int x,int y,int val) {
-	for(; x <= n ; x += x&-x) {
-		int Y = y ; 
-		for(; y <= n ; y += y&-y) {
-			BIT[x][y] += val ; 
-		}
-		y = Y ; 
-	}
-}
+    int X, Y; 
+    vector<vector<T>> bit ; 
 
-int query(int x,int y) {
-	int sum = 0 ; 
-	for(; x > 0 ; x -= x&-x) {
-		int Y = y ; 
-		for(; y > 0 ; y -= y&-y) sum += BIT[x][y]; 
-		y = Y ; 
-	}
-	return sum ;
-}
+    BIT_2D(int _X, int _Y) {
+        X = _X + 5 ;
+        Y = _Y + 5 ;  
+        bit.resize(X, vector<int>(Y)) ; 
+    }
+
+    void update(int x,int y,int val) {
+        for(int i = x ; i <= X ; i += i&-i) {
+            for(int j = y ; j <= Y ; j += j&-j) {
+                bit[i][j] += val ; 
+            }
+        }
+    }
+
+    int query(int x,int y) {
+        int sum = 0 ; 
+        for(int i = x ; i > 0 ; i -= i&-i) {
+            for(int j = y ; j > 0 ; j -= j&-j) 
+                sum += bit[i][j]; 
+        }
+        return sum ;
+    }
+};
