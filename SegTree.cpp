@@ -9,7 +9,7 @@
 // Building the Segment Tree - S.build(a), a must be a vector
 // Point updates - S.update(index, value) ; 
 // Range updates - S.updateRange(starting_pos, ending_pos, value, "type");
-// type - "add" , adds value from starting_pos to ending_pos
+// type - "add" , adds value to each element from starting_pos to ending_pos
 // type - "set" , sets every element to value from starting_pos to ending_pos
 // Query - S.query(starting_pos, ending_pos)  ; 
 
@@ -72,7 +72,6 @@ public :
 			return ;
 		}
 		int mid = (start + end) >> 1 ;
-	
 		if(start <= idx and idx <= mid) _update(2*node, start, mid, idx, val) ;
 		else _update(2*node+1, mid+1, end, idx, val) ;
 		tree[node] = merge(tree[2*node], tree[2*node+1]);
@@ -100,19 +99,15 @@ public :
 	void applyAgg(int node,int start, int end) {
 		if(isSet[node]) tree[node] = (end-start + 1) * lazySet[node]; 
 		tree[node] += (end - start + 1) * lazyAdd[node] ;
-
 		if(start != end ) {
 			compose(node, 2*node) ;
 			compose(node, 2*node + 1) ;
 		}  
-
 		reset(node) ;	
 	}
 
 	void _updateRange(int node,int start,int end,int l, int r,T val, int t) {
-
 		if(start > end or start > r or end < l ) return ; 
-
 		if(start >= l and end <= r) {
 			if(t == 1) lazyAdd[node] += val; 
 			else {
@@ -122,17 +117,12 @@ public :
 			}
 			return ; 
 		}
-
 		applyAgg(node,start,end) ;
-
 		int mid = (start + end) >> 1 ;
-
 		_updateRange(2*node, start, mid, l, r, val, t) ;
 		_updateRange(2*node + 1, mid+1, end, l, r, val, t) ;
-
 		applyAgg(2*node,start,mid) ;
 		applyAgg(2*node+1,mid+1,end) ;
-
 		tree[node] = merge(tree[2*node], tree[2*node+1]) ;
 	}
 
