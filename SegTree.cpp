@@ -14,13 +14,12 @@
 // Query - S.query(starting_pos, ending_pos)  ; 
 
 template <typename T> 
-class SegTree {
+struct SegTree {
 	int n;
 	T CNST ;  
 	vector<T> tree, lazyAdd, lazySet;
 	vector<bool> isSet; 
 	int type;
-public :
 	
 	SegTree(int x, string str) {
 		n = x ;
