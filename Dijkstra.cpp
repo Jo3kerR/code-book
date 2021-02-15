@@ -1,25 +1,26 @@
 const int mxN = 2e5 + 5; 
-int d[mxN] ; 
+long long d[mxN] ; 
 
-int dijkstra(int s, int t, int n) {
+void dijkstra(int s, int n) {
 
-    for(int i = 1 ; i <= n ; ++i) d[i] = numeric_limits<int>::max() ;
-    priority_queue<pair<int,int>> pq ; 
+    for(int i = 1 ; i <= n ; ++i) d[i] = 1e18 ;
     d[s] = 0 ; 
-    pq.push({0, s}) ; 
 
-    while(!pq.empty()) {
-        int u = pq.top().second ; 
-        pq.pop() ;
+    set<pair<int,int>> S ; 
+    S.insert({0, s}); 
 
+    while(!S.empty()) {
+        int u = S.begin()->second ; 
+        S.erase(S.begin()) ;
         for(auto i : g[u]) {
-            int v = i.first, w = i.second ; 
+            int v = i.first;
+            long long w = i.second ; 
             if(d[v] > d[u] + w) {
+                S.erase({d[v], v}) ; 
                 d[v] = d[u] + w ; 
-                pq.push({-d[v], v}) ; 
+                S.insert({d[v], v}) ;
             }
         }
-    } 
-    
-    return d[t] ; 
+    }
+
 }
