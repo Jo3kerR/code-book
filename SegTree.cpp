@@ -6,7 +6,7 @@
 // type - "lcm" , to find range lcm
 // type - "xor" , to find range xor
 
-// Building the Segment Tree - S.build(a), a must be a vector
+// Building the Segment Tree - S.build(a), a must be a vector and 1-indexed
 // Point updates - S.update(index, value) ; 
 // Range updates - S.updateRange(starting_pos, ending_pos, value, "type");
 // type - "add" , adds value to each element from starting_pos to ending_pos
@@ -60,11 +60,7 @@ struct SegTree {
 		_build(2*node+1, mid+1, end, arr) ;
 		tree[node] = merge(tree[2*node], tree[2*node+1]);
 	}
-
-	void build(vector<T> &arr) {
-		_build(1,1,n,arr) ;
-	}
-
+	
 	void _update(int node, int start, int end,int idx, T val) {
 		if(start == end) {
 			tree[node] = val ;
@@ -76,16 +72,10 @@ struct SegTree {
 		tree[node] = merge(tree[2*node], tree[2*node+1]);
 	}
 
-	void update(int x, T val) {
-		_update(1,1,n,x,val) ;
-	}
-
-	void reset(int node) {
-		lazySet[node] = 0 ; 
-		lazyAdd[node] = 0 ; 
-		isSet[node] = 0 ; 
-	}
-
+	void update(int x, T val) {_update(1,1,n,x,val) ;}
+	void build(vector<T> &arr) {_build(1,1,n,arr) ;}
+	void reset(int node) {lazySet[node] = 0, lazyAdd[node] = 0, isSet[node] = 0 ;}
+	
 	void compose(int par,int child) {
 		if(isSet[par]) {
 			lazySet[child] = lazySet[par] ;
