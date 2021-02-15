@@ -28,7 +28,7 @@ struct BIT_2D {
     }
 
     T query(int x1, int y1, int x2, int y2) {
-        return _query(x2, y2) - _query(x1, y2) -
-            _query(x2, y1) + _query(x1, y1) ; 
+        return _query(x2, y2) - _query(x1-1, y2) -
+            _query(x2, y1-1) + _query(x1-1, y1-1) ; 
     }
 };
