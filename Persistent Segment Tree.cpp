@@ -28,13 +28,8 @@ struct PST {
     // 1 based indexing
     node* getVersion(int k) { return version[k-1]; }
 
-    node* getNewNode(int k) {
-        node* temp = new node(getVersion(k)->left, getVersion(k)->right, getVersion(k)->val) ; 
-        return temp; 
-    }
-
     void newVersion(int k) {
-        node* new_node = getNewNode(k) ; 
+        node* new_node = new node(getVersion(k)->left, getVersion(k)->right, getVersion(k)->val) ; 
         version.push_back(new_node) ; 
     }
 
@@ -50,7 +45,7 @@ struct PST {
         _build(n->right, mid+1, end, a); 
         n->val = n->left->val + n->right->val ; 
     }
-	
+    
     void _update(node* n, int start, int end, int idx, T v) {
         if(idx > end or idx < start or start > end) return ; 
         if(start == end) {
@@ -70,8 +65,8 @@ struct PST {
         }
         n->val = n->left->val + n->right->val ; 
     }
-	
-    int _query(node* n,int start, int end, int l, int r) {
+    
+    T _query(node* n,int start, int end, int l, int r) {
         if(start > end or start > r or end < l) return 0 ; 
         if(start >= l and end <= r) return n->val ; 
         int mid = (start + end) / 2 ;
@@ -80,5 +75,5 @@ struct PST {
 
     void build(vector<T> &a) { _build(root, 1, n, a) ; }
     void update(int k, int idx, T val) { _update(getVersion(k), 1, n, idx, val); } 
-    int query(int k, int l, int r) { return _query(getVersion(k), 1, n, l, r) ; }
+    T query(int k, int l, int r) { return _query(getVersion(k), 1, n, l, r) ; }
 };
