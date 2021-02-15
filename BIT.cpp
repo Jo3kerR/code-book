@@ -1,14 +1,13 @@
-// Finds only sum but can be modified 
+// Finds only range sum but can be modified 
 // Declaration : BIT<int> B(size) ; 
 // Update : B.update(index, value), adds value to index 
 // Query : B.query(starting_pos, ending_pos), returns sum from 
-// starting_pos to ending_pos
+// 	   starting_pos to ending_pos
 
 template <typename T> 
-class BIT {
+struct BIT {
 	int n; 
 	vector<T> bit;
-public :
 	
 	BIT(int x) {
 		n = x; 
@@ -21,10 +20,10 @@ public :
 	}
 
 	T _query(int x) {
-    	T sum = 0;
-     	for(; x > 0; x -= x&-x)
-       		sum += bit[x];
-    	return sum;
+    		T sum = 0;
+     		for(; x > 0; x -= x&-x)
+       			sum += bit[x];
+    		return sum;
 	}
 
 	T query(int l,int r) {
