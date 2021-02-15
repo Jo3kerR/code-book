@@ -1,5 +1,5 @@
 // Declaration : matrix mat(size) 
-// expo_power(a, k, n) : returns [a]^k 
+// mat.expo_power(a, k) : returns [a]^k 
 
 struct matrix {
     int n ; 
