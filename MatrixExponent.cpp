@@ -16,16 +16,17 @@ struct matrix {
                     p.a[i][k] += a[i][j] * other.a[j][k] ; 
         return p ; 
     }
+
+    matrix expo_power(matrix a, int k) {
+	    matrix res(n); 
+	    for(int i = 0 ; i < n ; ++i) 
+	        res.a[i][i] = 1 ; 
+	    while(k) {
+	        if(k&1) res = res * a ; 
+	        a = a * a ;
+	        k >>= 1 ; 
+	    }
+	    return res; 
+	}
 };
 
-matrix expo_power(matrix a, int k, int n) {
-    matrix res(n); 
-    for(int i = 0 ; i < n ; ++i) 
-        res.a[i][i] = 1 ; 
-    while(k) {
-        if(k&1) res = res * a ; 
-        a = a * a ;
-        k >>= 1 ; 
-    }
-    return res; 
-}
