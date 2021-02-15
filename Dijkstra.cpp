@@ -1,15 +1,14 @@
 const int mxN = 2e5 + 5; 
-int dist[mxN] ; 
+int d[mxN] ; 
 
-void dijkstra(int s, int t, int n) {
+int dijkstra(int s, int t, int n) {
 
-    for(int i = 1 ; i <= n ; ++i) dist[i] = numeric_limits<int>::max() ;
+    for(int i = 1 ; i <= n ; ++i) d[i] = numeric_limits<int>::max() ;
     priority_queue<pair<int,int>> pq ; 
-    dist[s] = 0 ; 
+    d[s] = 0 ; 
     pq.push({0, s}) ; 
 
     while(!pq.empty()) {
-        int cur_dist = -pq.top().first ; 
         int u = pq.top().second ; 
         pq.pop() ;
 
@@ -21,4 +20,6 @@ void dijkstra(int s, int t, int n) {
             }
         }
     } 
+    
+    return d[t] ; 
 }
