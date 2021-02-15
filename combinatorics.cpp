@@ -1,43 +1,43 @@
-
-struct comb{
+struct nCr{
 
     int mxN, M; 
     vector<int> fact, ifact; 
 
-    int mul(int a, int b) { return a * 1ll * b % M ; }
+    int mul(int a, int b) { return (long long)a * b % M ; }
 
     int power(int a, int n) {
         if(n == 0) return 1 ; 
         int p = power(a, n/2) % M ; 
-        p = p * p % M ; 
-        return n & 1 ? p * a % M : p ; 
+        p = mul(p, p) ;  
+        return n & 1 ? mul(p, a) : p ; 
     }
 
     int invMod(int a) {
-        return power(a,M-2) % M ;
+        return power(a,M-2) ;
     }
 
     void pre() {
         fact[0] = 1 ;
         for(int i = 1;i< mxN;++i) 
-            fact[i] = mul(i, fact[i-1]) ; 
+            fact[i] = mul(i, fact[i-1]) ;
 
         ifact[mxN-1] = invMod(fact[mxN-1]) ; 
-        
+        cout << ifact[mxN-1] << " " ; 
+
         for(int i = mxN-1 ; i>0 ;--i) 
-            ifact[i-1] = mul(i, ifact[i]) ;
+            ifact[i-1] = mul(ifact[i], i) ;
     }
 
-    comb(int _mxN, int _M) {
-        mxN = _mxN ; 
+    nCr(int _mxN, int _M) {
+        mxN = _mxN + 5; 
         M = _M ; 
-        fact.resize(mxN+5) ; 
-        ifact.resize(mxN+5) ;
+        fact.resize(mxN) ; 
+        ifact.resize(mxN) ;
         pre() ;  
     }
 
 
-    int nCr(int n, int r) {
+    int C(int n, int r) {
         if (n < r || r < 0 || n < 0) return 0;
         int res = mul(ifact[r], ifact[n-r]) ;
         res = mul(res, fact[n]) ;
