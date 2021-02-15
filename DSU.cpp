@@ -6,7 +6,7 @@ struct DSU{
             n = _n + 5 ; 
             par.resize(n) ; 
             rnk.resize(n) ;
-            for(int i = 1 ; i <= n ; ++i) par[i] = i ; 
+            for(int i = 1 ; i < n ; ++i) par[i] = i ; 
         }
          
         int find_set(int a) {
