@@ -8,9 +8,9 @@ struct SCC{
     vector<int> order, comp ; 
     vector<bool> vis; 
     SCC(int _n) {
-        n = _n + 1 ; 
-        g.resize(n) ; gr.resize(n) ; 
-        comp = vector<int>(n, -1); vis.resize(n) ; 
+        n = _n ; 
+        g.resize(n+5) ; gr.resize(n+5) ; 
+        comp = vector<int>(n+5, -1); vis.resize(n+5) ; 
     }
     void addEdge(int u, int v) {
         g[u].push_back(v) ; 
