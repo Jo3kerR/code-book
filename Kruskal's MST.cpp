@@ -16,10 +16,10 @@ struct KRUSKAL{
         vector<int> par, rnk ;
         
         DSU(int _n) {
-            n = _n + 5 ; 
-            par.resize(n) ; 
-            rnk.resize(n) ;
-            for(int i = 1 ; i < n ; ++i) par[i] = i ; 
+            n = _n ; 
+            par.resize(n+5) ; 
+            rnk.resize(n+5) ;
+            for(int i = 1 ; i <= n ; ++i) par[i] = i ; 
         }
          
         int find_set(int a) { return (a == par[a] ? a : par[a] = find_set(par[a])) ;}
