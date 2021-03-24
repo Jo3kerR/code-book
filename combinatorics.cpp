@@ -15,7 +15,6 @@ struct nCr{
             fact[i] = mul(i, fact[i-1]) ;
 
         ifact[mxN-1] = invMod(fact[mxN-1]) ; 
-        cout << ifact[mxN-1] << " " ; 
 
         for(int i = mxN-1 ; i>0 ;--i) 
             ifact[i-1] = mul(ifact[i], i) ;
