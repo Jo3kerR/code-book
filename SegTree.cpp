@@ -1,3 +1,5 @@
+// Remove lazy when not needed
+
 // Declaration: SegTree<int> S(size, "type") 
 // type - "sum" , to find range sum
 // type - "max" , to find range max 
@@ -15,120 +17,84 @@
 
 template <typename T> 
 struct SegTree {
-	int n;
-	T CNST ;  
-	vector<T> tree, lazyAdd, lazySet;
-	vector<bool> isSet; 
-	int type;
-	
-	SegTree(int x, string str) {
-		n = x ;
-		tree.resize(4*n+5) ;
-		lazyAdd.resize(4*n+5) ;
-		lazySet.resize(4*n+5) ;
-		isSet.resize(4*n+5) ; 
-		
-		if(str == "sum") type = 0 ; 
-		else if(str == "min") type = 1 ;
-		else if(str == "max") type = 2 ;
-		else if(str == "gcd") type = 3 ; 
-		else if(str == "lcm") type = 4 ;
-		else if(str == "xor") type = 5 ;
-		
-		if(type == 0 or type == 3 or type == 5) CNST = 0 ; 
-		if(type == 2 ) CNST = numeric_limits<T>::min() ; 
-		if(type == 1 ) CNST = numeric_limits<T>::max() ;
-		if(type == 4 ) CNST = 1 ; 
-	}
-
-	T merge(T a, T b) {
-		if(type == 0 ) return a + b ; 
-		else if(type == 1 ) return min(a,b) ;
-		else if(type == 2 ) return max(a,b) ;
-		else if(type == 3 ) return __gcd(a,b) ;
-		else if(type == 4 ) return (a * b / __gcd(a,b)) ;
-		else return a ^ b ; 
-	}
-
-	void _build(int node,int start,int end, vector<T> &arr) {
-		if(start == end) {
-			tree[node] = arr[start] ;
-			return ;
-		}
-		int mid = (start + end) >> 1;
-		_build(2*node, start, mid, arr) ;
-		_build(2*node+1, mid+1, end, arr) ;
-		tree[node] = merge(tree[2*node], tree[2*node+1]);
-	}
-	
-	void _update(int node, int start, int end,int idx, T val) {
-		if(start == end) {
-			tree[node] = val ;
-			return ;
-		}
-		int mid = (start + end) >> 1 ;
-		if(start <= idx and idx <= mid) _update(2*node, start, mid, idx, val) ;
-		else _update(2*node+1, mid+1, end, idx, val) ;
-		tree[node] = merge(tree[2*node], tree[2*node+1]);
-	}
-
-	void update(int x, T val) {_update(1,1,n,x,val) ;}
-	void build(vector<T> &arr) {_build(1,1,n,arr) ;}
-	void reset(int node) {lazySet[node] = 0, lazyAdd[node] = 0, isSet[node] = 0 ;}
-	
-	void compose(int par,int child) {
-		if(isSet[par]) {
-			lazySet[child] = lazySet[par] ;
-			lazyAdd[child] = lazyAdd[par] ;
-			isSet[child] = true;  
-		}
-		else lazyAdd[child] += lazyAdd[par]; 
-	}
-
-	void applyAgg(int node,int start, int end) {
-		if(isSet[node]) tree[node] = (end-start + 1) * lazySet[node]; 
-		tree[node] += (end - start + 1) * lazyAdd[node] ;
-		if(start != end ) {
-			compose(node, 2*node) ;
-			compose(node, 2*node + 1) ;
-		}  
-		reset(node) ;	
-	}
-
-	void _updateRange(int node,int start,int end,int l, int r,T val, int t) {
-		if(start > end or start > r or end < l ) return ; 
-		if(start >= l and end <= r) {
-			if(t == 1) lazyAdd[node] += val; 
-			else {
-				isSet[node] = 1; 
-				lazySet[node] = val ;
-				lazyAdd[node] = 0 ;
-			}
-			return ; 
-		}
-		applyAgg(node,start,end) ;
-		int mid = (start + end) >> 1 ;
-		_updateRange(2*node, start, mid, l, r, val, t) ;
-		_updateRange(2*node + 1, mid+1, end, l, r, val, t) ;
-		applyAgg(2*node,start,mid) ;
-		applyAgg(2*node+1,mid+1,end) ;
-		tree[node] = merge(tree[2*node], tree[2*node+1]) ;
-	}
-
-	void updateRange(int l,int r, T val, string str) {
-		int t = (str == "add" ? 1 : 2 ) ;
-		_updateRange(1,1,n,l,r,val,t) ;
-	}
-
-	T _query(int node, int start,int end,int l, int r) {
-		if(r < start or l > end ) return CNST;
-		applyAgg(node,start,end) ;
-		if(l <= start and end <= r) return tree[node] ;
-		int mid = (start + end) >> 1 ;
-		return merge(_query(2*node,start, mid, l,r), _query(2*node+1,mid+1,end,l,r));
-	}
-
-	T query(int l, int r) {
-		return _query(1,1,n,l,r) ;
-	}
+    int n, type;
+    T CNST ;  
+    vector<T> tree, lazy; 
+    vector<bool> isSet; 
+    SegTree(int x, string str) {
+        n = x ;
+        tree.resize(4*n+5) ;
+        lazy.resize(4*n+5) ;
+        isSet.resize(4*n+5) ; 
+        if(str == "sum") type = 0 ; 
+        else if(str == "min") type = 1 ;
+        else if(str == "max") type = 2 ;
+        else if(str == "gcd") type = 3 ; 
+        else if(str == "lcm") type = 4 ;
+        else if(str == "xor") type = 5 ;
+        if(type == 0 or type == 3 or type == 5) CNST = 0 ; 
+        if(type == 2 ) CNST = numeric_limits<T>::min() ; 
+        if(type == 1 ) CNST = numeric_limits<T>::max() ;
+        if(type == 4 ) CNST = 1 ; 
+    }
+    inline T merge(T a, T b) {
+        if(type == 0 ) return a + b ; 
+        if(type == 1 ) return min(a,b) ;
+        if(type == 2 ) return max(a,b) ;
+        if(type == 3 ) return __gcd(a,b) ;
+        if(type == 4 ) return (a * 1LL * b / __gcd(a,b)) ;
+        return a ^ b ; 
+    }
+    void _build(int v, int s, int e, vector<T> &a) {
+        if(s == e) {tree[v] = a[s];return;}
+        _build(v<<1, s, s+e>>1, a) ;
+        _build(v<<1|1, (s+e>>1)+1, e, a) ;
+        tree[v] = merge(tree[v<<1], tree[v<<1|1]);
+    }
+    void _update(int v, int s, int e,int i, T w) {
+        if(s == e) {tree[v] = w; return;}
+        if(s <= i and i <= (s+e>>1)) _update(v<<1, s, s+e>>1, i, w) ;
+        else _update(v<<1|1, (s+e>>1)+1, e, i, w) ;
+        tree[v] = merge(tree[v<<1], tree[v<<1|1]);
+    }
+    inline void update(int x, T val) {_update(1,1,n,x,val);}
+    inline void build(vector<T> &a) {_build(1,1,n,a);}
+    inline void push(int v) {
+        if(isSet[v]) {
+            tree[v<<1] = tree[v<<1|1] = tree[v] ; 
+            isSet[v<<1] = isSet[v<<1|1] = true ; 
+            isSet[v] = false; lazy[v] = 0 ; 
+        }
+        else {
+            tree[v<<1] += lazy[v], lazy[v<<1] += lazy[v] ; 
+            tree[v<<1|1] += lazy[v], lazy[v<<1|1] += lazy[v] ;
+            lazy[v] = 0 ; 
+        }
+    }
+    void _updateRange(int v, int s, int e,int l, int r, T w,bool t) {
+        if(l > r) return ; 
+        if(s == l && e == r) {
+            if(t == 0) tree[v] += w, lazy[v] += w; 
+            else tree[v] = w, isSet[v] = true ;
+        }
+        else {
+            push(v) ; 
+            int m = s+e >> 1  ;
+            _updateRange(v<<1, s, m, l, min(r, m), w, t) ; 
+            _updateRange(v<<1|1, m+1, e, max(l, m+1), r, w, t); 
+            tree[v] = merge(tree[v<<1], tree[v<<1|1]) ; 
+        }
+    }
+    inline void updateRange(int l,int r, T w, string str = "add") {
+        bool t = (str == "add" ? 0 : 1) ;
+        _updateRange(1,1,n,l,r,w,t) ;
+    }
+    T _query(int v, int s, int e,int l, int r) {
+        if(l > r) return CNST ; 
+        if(l <= s && e <= r) return tree[v] ; 
+        push(v) ; 
+        int m = s+e >> 1;
+        return merge(_query(v<<1,s,m,l,min(r,m)),_query(v<<1|1,m+1,e,max(l,m+1),r)) ; 
+    }
+    inline T query(int l, int r) {return _query(1,1,n,l,r);}
 };
