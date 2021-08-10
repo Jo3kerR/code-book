@@ -12,6 +12,7 @@ struct frac{
     bool operator <= (const frac &b) { return num * b.den <= b.num * den ;}
     bool operator >= (const frac &b) { return num * b.den >= b.num * den ;}
     bool operator == (const frac &b) { return num * b.den == b.num * den ;}
+    bool operator != (const frac &b) { return num * b.den != b.num * den ;}
 
     frac operator - (const frac &b) {
         frac f((num * b.den - b.num * den) , den * b.den); 
