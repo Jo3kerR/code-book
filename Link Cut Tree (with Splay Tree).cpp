@@ -9,20 +9,20 @@ struct Node
     bool rev = 0;
 } t[N];
 
-bool nroot(int x);
-void rotate(int x);
-void Splay(int x);
-void access(int x);
-void makeroot(int x);
-void split(int x, int y);
-void link(int x, int y);
-void reverse(int x);
-void pushup(int x);
-void pushdown(int x);
-
 int n, q, sta[N], top;
 
 bool nroot(int x) { return x == t[t[x].fa].ch[0] || x == t[t[x].fa].ch[1]; }
+
+void reverse(int x)
+{
+    swap(t[x].ch[0], t[x].ch[1]);
+    t[x].rev ^= 1;
+}
+
+void pushup(int x)
+{
+    t[x].siz = t[t[x].ch[0]].siz + t[t[x].ch[1]].siz + t[x].vir + 1;
+}
 
 void rotate(int x)
 {
@@ -37,6 +37,16 @@ void rotate(int x)
     t[y].fa = x;
     pushup(y);
     pushup(x);
+}
+
+void pushdown(int x)
+{
+    if (t[x].rev)
+    {
+        reverse(t[x].ch[0]);
+        reverse(t[x].ch[1]);
+        t[x].rev = false;
+    }
 }
 
 void Splay(int x)
@@ -93,25 +103,4 @@ void cut(int x, int y) {
     split(x, y);
     t[x].fa = t[y].ch[0] = 0;
     t[y].siz = t[t[y].ch[0]].siz + t[t[y].ch[1]].siz + t[y].vir + 1;
-}
-
-void reverse(int x)
-{
-    swap(t[x].ch[0], t[x].ch[1]);
-    t[x].rev ^= 1;
-}
-
-void pushup(int x)
-{
-    t[x].siz = t[t[x].ch[0]].siz + t[t[x].ch[1]].siz + t[x].vir + 1;
-}
-
-void pushdown(int x)
-{
-    if (t[x].rev)
-    {
-        reverse(t[x].ch[0]);
-        reverse(t[x].ch[1]);
-        t[x].rev = false;
-    }
 }
