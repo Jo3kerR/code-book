@@ -1,107 +1,117 @@
-// https://codeforces.com/blog/entry/75885
+// https://codeforces.com/contest/1681/submission/158504314
+// https://codeforces.com/contest/1681/submission/158267779
 
-struct SplayTree {
-  struct Node {
-    int ch[2] = {0, 0}, p = 0;
-    long long self = 0, path = 0;        // Path aggregates
-    long long sub = 0, vir = 0;          // Subtree aggregates
-    bool flip = 0;                       // Lazy tags
-  };
-  vector<Node> T;
- 
-  SplayTree(int n) : T(n + 1) {}
-  
-  void push(int x) {
-    if (!x || !T[x].flip) return;
-    int l = T[x].ch[0], r = T[x].ch[1];
- 
-    T[l].flip ^= 1, T[r].flip ^= 1;
-    swap(T[x].ch[0], T[x].ch[1]);
-    T[x].flip = 0;
-  }
-  
-  void pull(int x) {
-    int l = T[x].ch[0], r = T[x].ch[1]; push(l); push(r); 
- 
-    T[x].path = T[l].path + T[x].self + T[r].path;
-    T[x].sub = T[x].vir + T[l].sub + T[r].sub + T[x].self;
-  }
-  
-  void set(int x, int d, int y) {
-    T[x].ch[d] = y; T[y].p = x; pull(x); 
-  }
- 
-  void splay(int x) { 
-    auto dir = [&](int x) {
-      int p = T[x].p; if (!p) return -1;
-      return T[p].ch[0] == x ? 0 : T[p].ch[1] == x ? 1 : -1;
-    };
-    auto rotate = [&](int x) {
-      int y = T[x].p, z = T[y].p, dx = dir(x), dy = dir(y);
-      set(y, dx, T[x].ch[!dx]); 
-      set(x, !dx, y);
-      if (~dy) set(z, dy, x); 
-      T[x].p = z;
-    };
-    for (push(x); ~dir(x); ) {
-      int y = T[x].p, z = T[y].p;
-      push(z); push(y); push(x);
-      int dx = dir(x), dy = dir(y);
-      if (~dy) rotate(dx != dy ? x : y);
-      rotate(x);
+const int N = 5e5 + 1;
+
+struct Node
+{
+    int ch[2] = {}, fa = 0, vir = 0, siz = 0;
+    bool rev = 0;
+} t[N];
+
+bool nroot(int x);
+void rotate(int x);
+void Splay(int x);
+void access(int x);
+void makeroot(int x);
+void split(int x, int y);
+void link(int x, int y);
+void reverse(int x);
+void pushup(int x);
+void pushdown(int x);
+
+int n, q, sta[N], top;
+
+bool nroot(int x) { return x == t[t[x].fa].ch[0] || x == t[t[x].fa].ch[1]; }
+
+void rotate(int x)
+{
+    int y = t[x].fa;
+    int z = t[y].fa;
+    int k = x == t[y].ch[1];
+    if (nroot(y)) t[z].ch[y == t[z].ch[1]] = x;
+    t[x].fa = z;
+    t[y].ch[k] = t[x].ch[k ^ 1];
+    t[t[x].ch[k ^ 1]].fa = y;
+    t[x].ch[k ^ 1] = y;
+    t[y].fa = x;
+    pushup(y);
+    pushup(x);
+}
+
+void Splay(int x)
+{
+    int u = x;
+    sta[++top] = x;
+    while (nroot(u)) sta[++top] = u = t[u].fa;
+    while (top) pushdown(sta[top--]);
+    while (nroot(x))
+    {
+        int y = t[x].fa;
+        int z = t[y].fa;
+        if (nroot(y)) (x == t[y].ch[1]) ^ (y == t[z].ch[1]) ? rotate(x) : rotate(y);
+        rotate(x);
     }
-  }
-};
- 
-struct LinkCut : SplayTree {
-  LinkCut(int n) : SplayTree(n) {}
- 
-  int access(int x) {
-    int u = x, v = 0;
-    for (; u; v = u, u = T[u].p) {
-      splay(u); 
-      int& ov = T[u].ch[1];
-      T[u].vir += T[ov].sub;
-      T[u].vir -= T[v].sub;
-      ov = v; pull(u);
+}
+
+void access(int x)
+{
+    for (int y = 0; x; x = t[y = x].fa)
+    {
+        Splay(x);
+        t[x].vir += t[t[x].ch[1]].siz;
+        t[x].ch[1] = y;
+        t[x].vir -= t[t[x].ch[1]].siz;
+        pushup(x);
     }
-    return splay(x), v;
-  }
- 
-  void reroot(int x) { 
-    access(x); T[x].flip ^= 1; push(x); 
-  }
-  
-  void Link(int u, int v) { 
-    reroot(u); access(v); 
-    T[v].vir += T[u].sub;
-    T[u].p = v; pull(v);
-  }
-  
-  void Cut(int u, int v) {
-    reroot(u); access(v);
-    T[v].ch[0] = T[u].p = 0; pull(v);
-  }
-  
-  // Rooted tree LCA. Returns 0 if u and v arent connected.
-  int LCA(int u, int v) { 
-    if (u == v) return u;
-    access(u); int ret = access(v); 
-    return T[u].p ? ret : 0;
-  }
-  
-  // Query subtree of u where v is outside the subtree.
-  long long Subtree(int u, int v) {
-    reroot(v); access(u); return T[u].vir + T[u].self;
-  }
-  
-  // Query path [u..v]
-  long long Path(int u, int v) {
-    reroot(u); access(v); return T[v].path;
-  }
-  
-  // Update vertex u with value v
-  void Update(int u, long long v) {
-    access(u); T[u].self = v; pull(u);
-  }
-};
+}
+
+void makeroot(int x)
+{
+    access(x);
+    Splay(x);
+    reverse(x);
+}
+
+void split(int x, int y)
+{
+    makeroot(x);
+    access(y);
+    Splay(y);
+}
+
+void link(int x, int y)
+{
+    makeroot(x);
+    access(y);
+    Splay(y);
+    t[x].fa = y;
+    t[y].vir += t[x].siz;
+}
+
+void cut(int x, int y) {
+    split(x, y);
+    t[x].fa = t[y].ch[0] = 0;
+    t[y].siz = t[t[y].ch[0]].siz + t[t[y].ch[1]].siz + t[y].vir + 1;
+}
+
+void reverse(int x)
+{
+    swap(t[x].ch[0], t[x].ch[1]);
+    t[x].rev ^= 1;
+}
+
+void pushup(int x)
+{
+    t[x].siz = t[t[x].ch[0]].siz + t[t[x].ch[1]].siz + t[x].vir + 1;
+}
+
+void pushdown(int x)
+{
+    if (t[x].rev)
+    {
+        reverse(t[x].ch[0]);
+        reverse(t[x].ch[1]);
+        t[x].rev = false;
+    }
+}
