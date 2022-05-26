@@ -102,5 +102,5 @@ void link(int x, int y)
 void cut(int x, int y) {
     split(x, y);
     t[x].fa = t[y].ch[0] = 0;
-    t[y].siz = t[t[y].ch[0]].siz + t[t[y].ch[1]].siz + t[y].vir + 1;
+    pushup(y);
 }
