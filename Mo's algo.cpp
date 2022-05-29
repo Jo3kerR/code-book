@@ -20,7 +20,7 @@ int get_answer() {
 
 }  
 
-vector<int> mo_s_algorithm(vector<Query> queries) {
+vector<int> mo_s_algorithm(vector<Query> &queries) {
     vector<int> answers(queries.size());
     sort(queries.begin(), queries.end());
 
