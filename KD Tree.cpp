@@ -1,4 +1,3 @@
-
 struct kd_tree {
     int k;
     struct node {
@@ -12,7 +11,7 @@ struct kd_tree {
         }
     };
     node *root;
-    multiset<pair<long double, vector<int>>> KNN;
+    multiset<pair<long long, vector<int>>> KNN;
     kd_tree(int _k) : k(_k) { root = NULL;}
     void insert(vector<int> _point) {
         if(root == NULL) {
@@ -40,10 +39,9 @@ struct kd_tree {
             d %= k;
         }
     }
-    long double get_distance(vector<int> &a, vector<int> &b) {
-        long double ans = 0;
+    long long get_distance(vector<int> &a, vector<int> &b) {
+        long long ans = 0;
         for(int i = 0; i < k; ++i) ans += (a[i] - b[i]) * (a[i] - b[i]);
-        ans = sqrt(ans);
         return ans;
     }
     void print(vector<int> &a) {
@@ -63,7 +61,7 @@ struct kd_tree {
             KNN.insert({get_distance(ptr -> point, _point), ptr -> point});
         }
         int dir = -1;
-        if(ptr -> point[d] >= _point[d]) {
+        if(ptr -> point[d] > _point[d]) {
             find_KNN(_point, ptr -> left, K, d + 1);
             dir = 0;
         }
@@ -71,7 +69,7 @@ struct kd_tree {
             find_KNN(_point, ptr -> right, K, d + 1);
             dir = 1;
         }
-        if((int)KNN.size() < K || get_distance(ptr -> point, _point) < KNN.rbegin() -> first) {
+        if((int)KNN.size() < K || abs(ptr -> point[k] - _point[k]) * abs(ptr -> point[k] - _point[k]) <= KNN.rbegin() -> first) {
             if(dir) find_KNN(_point, ptr -> left, K, d + 1);
             else find_KNN(_point, ptr -> right, K, d + 1);
         }
