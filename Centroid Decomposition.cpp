@@ -1,3 +1,7 @@
+// more efficient: calculate the answer while building the CD tree, check the code below
+// https://codeforces.com/contest/161/submission/168221729
+// problems: https://codeforces.com/blog/entry/73707
+
 struct centroid_decomposition {
     int n;
     vector<int> sz, par;
