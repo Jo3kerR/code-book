@@ -69,7 +69,7 @@ struct kd_tree {
             find_KNN(_point, ptr -> right, K, d + 1);
             dir = 1;
         }
-        if((int)KNN.size() < K || abs(ptr -> point[k] - _point[k]) * abs(ptr -> point[k] - _point[k]) <= KNN.rbegin() -> first) {
+        if((int)KNN.size() < K || abs(ptr -> point[d] - _point[d]) * abs(ptr -> point[d] - _point[d]) <= KNN.rbegin() -> first) {
             if(dir) find_KNN(_point, ptr -> left, K, d + 1);
             else find_KNN(_point, ptr -> right, K, d + 1);
         }
