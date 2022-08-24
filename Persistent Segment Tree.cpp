@@ -1,3 +1,6 @@
+// https://www.spoj.com/files/src/29970922/
+// https://www.spoj.com/files/src/29970298/
+
 // Declaration : PST<int> P(size) ; 
 // Building the Segment Tree - P.build(a), 
 //			a must be a vector and 1-indexed
