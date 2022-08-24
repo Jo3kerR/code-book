@@ -25,8 +25,8 @@ struct PST {
         version.push_back(root) ;
     } 
 
-    // 1 based indexing
-    node* getVersion(int k) { return version[k-1]; }
+    // 0 based indexing
+    node* getVersion(int k) { return version[k]; }
 
     void newVersion(int k) {
         node* new_node = new node(getVersion(k)->left, getVersion(k)->right, getVersion(k)->val) ; 
