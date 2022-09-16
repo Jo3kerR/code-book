@@ -28,4 +28,12 @@ struct Trie{
     int dfs(string &s) {
         conmplete 
     }
+    
+    void dealloc(node *temp) {
+        if(temp == NULL) return ;
+        for(int i = 0 ; i < 2; ++i) {
+            dealloc(temp -> child[i]) ;
+        }
+        delete temp ;
+    }
 };
