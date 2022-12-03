@@ -1,3 +1,5 @@
+// if comparing substrings of two different strings of different length, use mod inverse instead, this won't work
+
 struct RollingHash {
     int n;
     int pr, mod;
